@@ -1,0 +1,144 @@
+<section id="booking-form" class="my-4">
+    <div class="container mt-5">
+        <div class="row">
+            
+          
+            <div class="col-4">
+                <h5 class="text-center">Select Seats</h5>
+                <p class="text-center text-muted small">Click multiple seats</p>
+                
+                <div class="row">
+                    @for (item of seatarray; track $index) {
+                        @if(checkifseatbooked(item)) {
+                            <div class="col-2 text-center">
+                                <div class="seat reserved mb-2 p-3 border border-dark">
+                                    {{item}}
+                                </div> 
+                            </div>
+                        }
+                        @else {
+                            <div class="col-2 text-center">
+                                <div class="seat available mb-2 p-3 border border-dark" 
+                                     [class.selected]="isSelected(item)"
+                                     (click)="selectSeat(item)">
+                                    {{item}}
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                
+           
+                <hr>
+                <div class="row">
+                    <div class="col-4 text-center">
+                        <div class="seat reserved" style="width: 40px; height: 40px;"></div>
+                        <small>Booked</small>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="seat selected" style="width: 40px; height: 40px;"></div>
+                        <small>Selected</small>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="seat available" style="width: 40px; height: 40px;"></div>
+                        <small>Available</small>
+                    </div>
+                </div>
+
+ 
+                @if(selectedSeats.length > 0) {
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <strong>Selected Seats:</strong> 
+                        <span class="badge bg-success ms-2">{{selectedSeats.join(', ')}}</span>
+                    </div>
+                }
+            </div>
+            
+       
+            <div class="col-8">
+                <h4>Passenger Details</h4>
+               
+                @if(selectedSeats.length === 0) {
+                    <div class="text-center pt-5">
+                        <p class="text-muted">Please select seats first</p>
+                    </div>
+                }
+                @else {
+ 
+                    @for(seat of selectedSeats; track seat) {
+                        <div class="card mb-3 p-3 border-primary">
+                            <h6 class="mb-3">
+                                <span class="badge bg-primary">Seat {{seat}}</span>
+                                Passenger Details
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-4">
+                                    <label>Full Name <span class="text-danger">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        placeholder="Enter name"
+                                        [value]="getPassenger(seat)?.name || ''"
+                                        (input)="updatePassenger(seat, 'name', $any($event.target).value)">
+                                </div>
+                                
+                                <div class="col-3">
+                                    <label>Age <span class="text-danger">*</span></label>
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        placeholder="Age"
+                                        min="1"
+                                        max="120"
+                                        [value]="getPassenger(seat)?.age || ''"
+                                        (input)="updatePassenger(seat, 'age', +$any($event.target).value)">
+                                </div>
+                                
+                                <div class="col-3">
+                                    <label>Gender <span class="text-danger">*</span></label>
+                                    <select 
+                                        class="form-control"
+                                        [value]="getPassenger(seat)?.gender || ''"
+                                        (change)="updatePassenger(seat, 'gender', $any($event.target).value)">
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-2 d-flex align-items-end">
+                                    <button 
+                                        class="btn btn-sm btn-outline-danger w-100" 
+                                        (click)="selectSeat(seat)"
+                                        title="Remove this seat">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                   
+                    <div class="alert alert-info">
+                        <strong>Price Summary:</strong><br>
+                        {{selectedSeats.length}} seat(s) × ₹{{busdata?.price}} = <strong>₹{{getTotalPrice()}}</strong>
+                    </div>
+                }
+            </div>
+        </div>
+        
+      
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button 
+                    class="btn btn-danger btn-lg px-5" 
+                    [disabled]="selectedSeats.length === 0"
+                    (click)="bookSeats()">
+                    Book {{selectedSeats.length}} Seat(s) - ₹{{getTotalPrice()}}
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,27 @@
+.seat {
+  display: inline-block;
+  min-width: 50px;
+  min-height: 50px;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.seat.available {
+  background-color: white;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #d4edda;
+    border-color: #28a745 !important;
+    transform: scale(1.05);
+  }
+}
+
+.seat.reserved {
+  background-color: #dc3545 !important;
+  color: rgb(6, 0, 0) !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
